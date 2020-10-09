@@ -1,6 +1,5 @@
-#Learning Laravel
-** Topics **
-
+# Learning Laravel
+**Topics**
 -   Setting up Environment
 -   Routing
 -   Controllers
