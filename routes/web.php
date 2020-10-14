@@ -22,6 +22,7 @@ Route::get("/services",[PagesController::class,"services"]);
 Route::resource("posts",PostsController::class);
 
 
+
 /*
 
 Route::get('/', function () {
@@ -51,3 +52,7 @@ Route::get("/users/{id}/{name}", function($id,$name){
 // RESTFUL api
 //:post //:delete
 
+
+Auth::routes();
+
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
