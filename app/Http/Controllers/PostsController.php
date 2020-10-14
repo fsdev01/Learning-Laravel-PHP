@@ -9,6 +9,19 @@ use App\Models\Post; // Use Model - query db for data
 class PostsController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        // Ensure user is authenticated
+        // for index and show pages
+        $this->middleware('auth',['index','show']);
+    }
+
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -79,6 +92,13 @@ class PostsController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
+        
+        // Check that the current user is the owner of the post
+        if(auth()->user()->id !== $post->user_id){
+            return redirect("/posts")->with('error','Unauthorised Page');
+        }
+
+
         return view("posts.edit")->with('post',$post);
     }
 
@@ -94,8 +114,16 @@ class PostsController extends Controller
         // Validate Request Data (title and body fields)
         $this->validate($request,['title'=>'required','body'=>'required']);
 
+
+
         // Find Post
         $post = Post::find($id);
+
+        // Check that the current user is the owner of the post
+        if(auth()->user()->id !== $post->user_id){
+            return redirect("/posts")->with('error','Unauthorised Page');
+        }
+
         $post->title = $request->input('title');
         $post->body = $request->input('body');
         $post->save();
@@ -113,6 +141,12 @@ class PostsController extends Controller
     public function destroy($id)
     {
         $post = Post::find($id);
+        
+        // Check that the current user is the owner of the post
+        if(auth()->user()->id !== $post->user_id){
+            return redirect("/posts")->with('error','Unauthorised Page');
+        }
+
         $post->delete();
         return redirect('/posts')->with('success','Post Removed');
     }
